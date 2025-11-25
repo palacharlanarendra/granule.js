@@ -1,0 +1,37 @@
+{
+  "name": "granule-js",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Granular subscription state management for React via path-based dependency tracking.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup --config tsup.config.ts",
+    "dev": "tsup --config tsup.config.ts --watch",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "bench": "node bench/simple.js"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.10",
+    "jsdom": "^27.2.0",
+    "react": "18.3.1",
+    "tsup": "8.0.1",
+    "typescript": "5.6.3",
+    "vitest": "1.6.1"
+  }
+}
