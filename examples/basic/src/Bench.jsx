@@ -5,7 +5,7 @@ function RenderBadge({ label }) {
   const ref = useRef(0);
   ref.current += 1;
   return (
-    <span style={{ marginLeft: 8, fontSize: 12, color: "#666" }}>
+    <span style={{ marginLeft: 8, fontSize: 12, color: "#444" }}>
       ({label} renders: {ref.current})
     </span>
   );
@@ -74,7 +74,7 @@ function BaselineBenchSection({ count = 300 }) {
         <strong>Global counter:</strong> {state.globalCounter}
         <RenderBadge label="B-global" />
       </div>
-      <div style={{ height: 240, overflow: "auto", border: "1px solid #eee", padding: 8 }}>
+      <div style={{ height: 240, overflow: "auto", border: "1px solid #bbb", padding: 8 }}>
         {state.items.map((item, i) => (
           <div key={i}>
             <span>Item {i}: {item.value}</span>

@@ -4,12 +4,13 @@ import { store } from './store.js'
 import { useGranular } from '../../../dist/index.js'
 import { BaselineProvider, useBaseline } from './baselineStore.jsx'
 import Bench from './Bench.jsx'
+import { CoinsGranule, CoinsBaseline } from './Coins.jsx'
 
 function RenderCountBadge({ label }) {
   const rendersRef = useRef(0);
   rendersRef.current += 1;
   return (
-    <span style={{ marginLeft: 8, fontSize: 12, color: '#888' }}>
+    <span style={{ marginLeft: 8, fontSize: 12, color: '#444' }}>
       ({label} renders: {rendersRef.current})
     </span>
   );
@@ -30,7 +31,7 @@ function AgeDisplay() {
   return (
     <div>
       <strong>Age:</strong> {age}
-      <span style={{ marginLeft: 8, fontSize: 12, color: '#888' }}>
+      <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>
         (raw: {store.get().user.age})
       </span>
       <RenderCountBadge label="Age" />
@@ -81,6 +82,9 @@ function Controls() {
 function getRouteFromHash() {
   const hash = window.location.hash.replace(/^#/, '');
   if (hash.startsWith('/bench')) return 'bench';
+  if (hash.startsWith('/coins-granule')) return 'coins-granule';
+  if (hash.startsWith('/coins-baseline')) return 'coins-baseline';
+  if (hash.startsWith('/dashboard')) return 'dashboard';
   return 'dashboard';
 }
 
@@ -93,18 +97,34 @@ function App() {
   }, []);
 
   return (
-    <div style={{ padding: 16 }}>
-      <h1>Granule.js Demo</h1>
-      <nav style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-        <a href="#/">Dashboard</a>
-        <a href="#/bench">Benchmark</a>
-      </nav>
-      {route === 'bench' ? (
-        <Bench />
-      ) : (
-        <Dashboard />
-      )}
-    </div>
+    <>
+      <header className="app-navbar">
+        <div className="app-bar">
+          <h1 className="app-brand">Granule.js Examples</h1>
+          <nav className="app-nav">
+            <a href="#/dashboard">Granule vs Baseline</a>
+            <a href="#/coins-granule">Coins (Granule)</a>
+            <a href="#/coins-baseline">Coins (Baseline)</a>
+            <a href="#/bench">Benchmark</a>
+          </nav>
+        </div>
+      </header>
+      <main className="app-main">
+        <div style={{ padding: 16 }}>
+          {route === 'bench' ? (
+            <Bench />
+          ) : route === 'coins-granule' ? (
+            <CoinsGranule />
+          ) : route === 'coins-baseline' ? (
+            <CoinsBaseline />
+          ) : route === 'dashboard' ? (
+            <Dashboard />
+          ) : (
+            <Dashboard />
+          )}
+        </div>
+      </main>
+    </>
   )
 }
 
@@ -114,15 +134,16 @@ function Dashboard() {
   return (
     <div>
       <p>Left: Granular subscriptions. Right: Baseline Context (no granules).</p>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        <div>
+      <div className="split-3">
+        <div className="section-card">
           <h2 style={{ marginTop: 0 }}>Granule</h2>
           <ProfileName />
           <AgeDisplay />
           <ThemeDisplay />
           <Controls />
         </div>
-        <div>
+        <div className="split-divider"></div>
+        <div className="section-card">
           <BaselineProvider>
             <h2 style={{ marginTop: 0 }}>Baseline (Context)</h2>
             <BaselineProfileName />
@@ -136,6 +157,32 @@ function Dashboard() {
         Compare render counters: baseline typically re-renders more on unrelated updates.
       </p>
     </div>
+  );
+}
+
+function DashboardGranule() {
+  return (
+    <div>
+      <h2 style={{ marginTop: 0 }}>Granule</h2>
+      <ProfileName />
+      <AgeDisplay />
+      <ThemeDisplay />
+      <Controls />
+    </div>
+  );
+}
+
+function DashboardBaseline() {
+  return (
+    <BaselineProvider>
+      <div>
+        <h2 style={{ marginTop: 0 }}>Baseline (Context)</h2>
+        <BaselineProfileName />
+        <BaselineAgeDisplay />
+        <BaselineThemeDisplay />
+        <BaselineControls />
+      </div>
+    </BaselineProvider>
   );
 }
 
