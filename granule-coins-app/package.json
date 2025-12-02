@@ -1,0 +1,22 @@
+{
+  "name": "granule-coins-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "audit:desktop": "lighthouse http://localhost:4173/ --preset=desktop --output=json,html --output-path=./lighthouse-desktop.html",
+    "audit:mobile": "lighthouse http://localhost:4173/ --preset=mobile --output=json,html --output-path=./lighthouse-mobile.html"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "vite": "^7.2.4",
+    "lighthouse": "^12.2.0"
+  }
+}
