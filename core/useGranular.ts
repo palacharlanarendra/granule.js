@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { createReadTracker } from "../core/proxy";
-import type { Store } from "../core/store";
+import { createReadTracker } from "./proxy";
+import type { Store } from "./store";
 import { useSyncExternalStore } from "react";
 
 export type UseGranularOptions<R> = {
@@ -8,9 +8,18 @@ export type UseGranularOptions<R> = {
   debug?: boolean;
 };
 
+type SelectorConfig<T, R> = { path: string } | { from: (s: T) => any; pick: readonly (string | number)[] };
+
+function readAt(obj: any, path: string) {
+  const parts = path.split(".");
+  let v = obj;
+  for (let i = 0; i < parts.length; i++) v = v[parts[i]];
+  return v as unknown;
+}
+
 export function useGranular<T, R>(
   store: Store<T>,
-  selector: (s: T) => R,
+  selectorOrConfig: ((s: T) => R) | SelectorConfig<T, R>,
   options?: UseGranularOptions<R>
 ): R {
   const idRef = useRef<symbol>();
@@ -35,7 +44,20 @@ export function useGranular<T, R>(
 
   const getSnapshot = () => {
     const { proxy, getPaths } = createReadTracker(store.get());
-    const value = selector(proxy);
+    let value: any;
+    let pickKeys: readonly (string | number)[] | undefined;
+    if (typeof selectorOrConfig === "function") {
+      value = (selectorOrConfig as (s: T) => R)(proxy);
+    } else if ("path" in selectorOrConfig) {
+      value = readAt(proxy as any, selectorOrConfig.path);
+    } else {
+      const obj = (selectorOrConfig as any).from(proxy);
+      const keys: readonly (string | number)[] = (selectorOrConfig as any).pick;
+      const out: any = {};
+      for (const k of keys) out[k as any] = obj[k as any];
+      value = out;
+      pickKeys = keys;
+    }
     const paths = getPaths();
     const key = Array.from(paths).sort().join("|");
     if (key !== depsKeyRef.current) {
@@ -52,6 +74,15 @@ export function useGranular<T, R>(
       if (options.isEqual(prevValueRef.current as R, value)) {
         return prevValueRef.current as R;
       }
+    } else if (pickKeys && prevValueRef.current !== undefined) {
+      let same = true;
+      for (const k of pickKeys) {
+        if ((prevValueRef.current as any)[k as any] !== (value as any)[k as any]) {
+          same = false;
+          break;
+        }
+      }
+      if (same) return prevValueRef.current as R;
     }
     prevValueRef.current = value;
     return value;

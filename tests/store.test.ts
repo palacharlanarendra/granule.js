@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { createStore } from "../src/core/store";
-import { createReadTracker } from "../src/core/proxy";
+import { createStore } from "../core/store";
+import { createReadTracker } from "../core/proxy";
 
 describe("store granular subscriptions", () => {
   it("notifies only paths that change", () => {

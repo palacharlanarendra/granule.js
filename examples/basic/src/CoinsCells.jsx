@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, memo, Profiler } from "react"
-import { createStore, useGranular, useGranularPick } from "granule-js"
+import { createStore, useGranular } from "granule-js"
 
 function RenderBadge({ label }) {
   const ref = useRef(0)
@@ -40,12 +40,12 @@ function formatNumber(n) {
 }
 
 const RankCell = memo(function RankCell({ store, index }) {
-  const rank = useGranular(store, s => s.coins[index].rank)
+  const rank = useGranular(store, { path: `coins.${index}.rank` })
   return <td className="cmc-rank">{rank}<RenderBadge label={`R-${index}`} /></td>
 })
 
 const NameCell = memo(function NameCell({ store, index }) {
-  const data = useGranularPick(store, s => s.coins[index], ["name","symbol"])
+  const data = useGranular(store, { from: s => s.coins[index], pick: ["name","symbol"] })
   return (
     <td className="cmc-cell">
       <strong className="cmc-name-main">{data.name}</strong> <span className="cmc-symbol">{data.symbol}</span>
@@ -66,17 +66,17 @@ function PriceBox({ value }) {
 }
 
 const PriceCell = memo(function PriceCell({ store, index }) {
-  const data = useGranularPick(store, s => s.coins[index], ["price","change24h"])
+  const data = useGranular(store, { from: s => s.coins[index], pick: ["price","change24h"] })
   return <td className="cmc-cell"><PriceBox value={data} /></td>
 })
 
 const MarketCapCell = memo(function MarketCapCell({ store, index }) {
-  const marketCap = useGranular(store, s => s.coins[index].marketCap)
+  const marketCap = useGranular(store, { path: `coins.${index}.marketCap` })
   return <td className="cmc-cell">${formatNumber(marketCap)}<RenderBadge label={`MC-${index}`} /></td>
 })
 
 const VolumeCell = memo(function VolumeCell({ store, index }) {
-  const volume = useGranular(store, s => s.coins[index].volume24h)
+  const volume = useGranular(store, { path: `coins.${index}.volume24h` })
   return <td className="cmc-cell">${formatNumber(volume)}<RenderBadge label={`V-${index}`} /></td>
 })
 
@@ -196,24 +196,24 @@ export default function CoinsCells() {
         )}
       </div>
       <div className="cmc-table-wrap">
-        <table className="cmc-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Market Cap</th>
-              <th>Volume (24h)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <ProfilerBox id="coins-cells">
+        <ProfilerBox id="coins-cells">
+          <table className="cmc-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Market Cap</th>
+                <th>Volume (24h)</th>
+              </tr>
+            </thead>
+            <tbody>
               {Array.from({ length: count }).map((_, i) => (
                 <Row key={i} store={store} index={i} agg={agg} />
               ))}
-            </ProfilerBox>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </ProfilerBox>
       </div>
     </div>
   )

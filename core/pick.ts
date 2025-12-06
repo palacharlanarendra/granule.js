@@ -1,4 +1,4 @@
-import type { Store } from "../core/store";
+import type { Store } from "./store";
 import { useGranular } from "./useGranular";
 
 export function useGranularPick<T, O extends Record<string, any>, K extends keyof O>(

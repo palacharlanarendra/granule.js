@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, memo } from "react"
-import { createStore, useGranular, useGranularPick } from "granule-js"
+import { createStore, useGranular } from "granule-js"
 
 function RenderBadge({ label }) {
   const ref = useRef(0)
@@ -54,7 +54,7 @@ function makeInitialCoins() {
 }
 
 const Row = memo(function Row({ store, index, agg }) {
-  const data = useGranularPick(store, s => s.coins[index], ["id","rank","name","symbol","price","change24h"])
+  const data = useGranular(store, { from: s => s.coins[index], pick: ["id","rank","name","symbol","price","change24h"] })
   const rendersRef = useRef(0)
   rendersRef.current += 1
   if (agg) {

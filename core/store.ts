@@ -6,6 +6,8 @@ export type Listener = () => void;
 export interface Store<T> {
   get(): T;
   set(updater: (draft: T) => void): void;
+  setAt(path: Path, value: unknown): void;
+  updateAt(path: Path, updater: (current: unknown) => unknown): void;
   // Internal APIs used by the React hook
   subscribeComponent(id: symbol, listener: Listener): () => void;
   updateComponentPaths(id: symbol, paths: Set<Path>): void;
@@ -111,6 +113,23 @@ export function createStore<T>(initial: T): Store<T> {
     notifyChanged(getChangedPaths());
   };
 
+  const setAt = (path: Path, value: unknown) => {
+    const parts = path.split(".");
+    let obj: any = state as any;
+    for (let i = 0; i < parts.length - 1; i++) obj = obj[parts[i]];
+    obj[parts[parts.length - 1]] = value;
+    notifyChanged(new Set([path]));
+  };
+
+  const updateAt = (path: Path, updater: (current: unknown) => unknown) => {
+    const parts = path.split(".");
+    let obj: any = state as any;
+    for (let i = 0; i < parts.length - 1; i++) obj = obj[parts[i]];
+    const key = parts[parts.length - 1];
+    obj[key] = updater(obj[key]);
+    notifyChanged(new Set([path]));
+  };
+
   const enableDebug = (flag: boolean) => {
     debug.enabled = flag;
   };
@@ -118,6 +137,8 @@ export function createStore<T>(initial: T): Store<T> {
   return {
     get,
     set,
+    setAt,
+    updateAt,
     subscribeComponent,
     updateComponentPaths,
     clearComponentPaths,
