@@ -1,5 +1,5 @@
 import { useMemo, useState, useRef } from "react";
-import { createStore, useGranular } from "../../../dist/index.js";
+import { createStore, useGranular } from "granule-js";
 
 function RenderBadge({ label }) {
   const ref = useRef(0);

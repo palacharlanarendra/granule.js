@@ -1,4 +1,4 @@
-import { createStore } from "../../../dist/index.js";
+import { createStore } from "granule-js";
 
 export const store = createStore({
   user: { name: "John", age: 22 },

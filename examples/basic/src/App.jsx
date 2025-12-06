@@ -1,10 +1,12 @@
 import { useRef, useState, useEffect } from 'react'
 import './App.css'
 import { store } from './store.js'
-import { useGranular } from '../../../dist/index.js'
+import { useGranular } from 'granule-js'
 import { BaselineProvider, useBaseline } from './baselineStore.jsx'
 import Bench from './Bench.jsx'
 import { CoinsGranule, CoinsBaseline } from './Coins.jsx'
+import Realtime from './Realtime.jsx'
+import CoinsCells from './CoinsCells.jsx'
 
 function RenderCountBadge({ label }) {
   const rendersRef = useRef(0);
@@ -84,6 +86,8 @@ function getRouteFromHash() {
   if (hash.startsWith('/bench')) return 'bench';
   if (hash.startsWith('/coins-granule')) return 'coins-granule';
   if (hash.startsWith('/coins-baseline')) return 'coins-baseline';
+  if (hash.startsWith('/coins-cells')) return 'coins-cells';
+  if (hash.startsWith('/realtime')) return 'realtime';
   if (hash.startsWith('/dashboard')) return 'dashboard';
   return 'dashboard';
 }
@@ -105,6 +109,8 @@ function App() {
             <a href="#/dashboard">Granule vs Baseline</a>
             <a href="#/coins-granule">Coins (Granule)</a>
             <a href="#/coins-baseline">Coins (Baseline)</a>
+            <a href="#/coins-cells">Coins (Cells)</a>
+            <a href="#/realtime">Real-time</a>
             <a href="#/bench">Benchmark</a>
           </nav>
         </div>
@@ -117,6 +123,10 @@ function App() {
             <CoinsGranule />
           ) : route === 'coins-baseline' ? (
             <CoinsBaseline />
+          ) : route === 'coins-cells' ? (
+            <CoinsCells />
+          ) : route === 'realtime' ? (
+            <Realtime />
           ) : route === 'dashboard' ? (
             <Dashboard />
           ) : (

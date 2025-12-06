@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, memo, Profiler } from "react";
-import { createStore, useGranular } from "../../../dist/index.js";
+import { createStore, useGranular, useGranularPick } from "granule-js";
 
 function RenderBadge({ label }) {
   const ref = useRef(0);
@@ -50,20 +50,6 @@ function PriceCell({ value }) {
   );
 }
 
-function eqlCoin(a, b) {
-  if (a === b) return true;
-  if (!a || !b) return false;
-  return (
-    a.id === b.id &&
-    a.rank === b.rank &&
-    a.name === b.name &&
-    a.symbol === b.symbol &&
-    a.price === b.price &&
-    a.change24h === b.change24h &&
-    a.marketCap === b.marketCap &&
-    a.volume24h === b.volume24h
-  );
-}
 
 function ProfilerBox({ id, children }) {
   const statsRef = useRef({ commits: 0, totalActual: 0, totalBase: 0 });
@@ -96,19 +82,20 @@ function ProfilerBox({ id, children }) {
 }
 
 const GranuleCoinRow = memo(function GranuleCoinRow({ store, index, agg }) {
-  const data = useGranular(store, (s) => {
-    const c = s.coins[index];
-    return {
-      id: c.id,
-      rank: c.rank,
-      name: c.name,
-      symbol: c.symbol,
-      price: c.price,
-      change24h: c.change24h,
-      marketCap: c.marketCap,
-      volume24h: c.volume24h,
-    };
-  }, { isEqual: eqlCoin });
+  const data = useGranularPick(
+    store,
+    (s) => s.coins[index],
+    [
+      "id",
+      "rank",
+      "name",
+      "symbol",
+      "price",
+      "change24h",
+      "marketCap",
+      "volume24h",
+    ]
+  );
   const rendersRef = useRef(0);
   rendersRef.current += 1;
   if (agg) {

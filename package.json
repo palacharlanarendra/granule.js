@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup --config tsup.config.ts",
     "dev": "tsup --config tsup.config.ts --watch",
-    "test": "vitest",
+    "test": "NODE_OPTIONS=\"--require ./tests/polyfill.cjs\" vitest",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
     "bench": "node bench/simple.js"
