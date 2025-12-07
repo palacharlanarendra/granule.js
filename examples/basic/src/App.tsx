@@ -1,14 +1,14 @@
 import { useRef, useState, useEffect } from 'react'
 import './App.css'
-import { store } from './store.js'
+import { store } from './store'
 import { useGranular } from 'granule-js'
-import { BaselineProvider, useBaseline } from './baselineStore.jsx'
-import Bench from './Bench.jsx'
-import { CoinsGranule, CoinsBaseline } from './Coins.jsx'
-import Realtime from './Realtime.jsx'
-import CoinsCells from './CoinsCells.jsx'
+import { BaselineProvider, useBaseline } from './baselineStore'
+import Bench from './Bench'
+import { CoinsGranule, CoinsBaseline } from './Coins'
+import Realtime from './Realtime'
+import CoinsCells from './CoinsCells'
 
-function RenderCountBadge({ label }) {
+function RenderCountBadge({ label }: { label: string }) {
   const rendersRef = useRef(0);
   rendersRef.current += 1;
   return (
@@ -56,8 +56,6 @@ function Controls() {
     <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
       <button onClick={() => {
         store.set((s) => { s.user.age += 1; });
-        // debug: verify state changed
-        // eslint-disable-next-line no-console
         console.log("[demo] age after click:", store.get().user.age);
       }}>
         Increment Age
@@ -66,7 +64,6 @@ function Controls() {
         for (let i = 0; i < 5; i++) {
           store.set((s) => { s.user.age += 1; });
         }
-        // eslint-disable-next-line no-console
         console.log("[demo] age after 5x:", store.get().user.age);
       }}>
         Increment Age x5

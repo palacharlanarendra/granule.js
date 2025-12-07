@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { CoinsBaseline } from './Coins.jsx'
+import { CoinsGranule } from './Coins'
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <CoinsBaseline />
+    <CoinsGranule />
   </StrictMode>,
 )

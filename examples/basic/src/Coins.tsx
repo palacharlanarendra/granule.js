@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, memo, Profiler } from "react";
 import { createStore, useGranular } from "granule-js";
 
-function RenderBadge({ label }) {
+function RenderBadge({ label }: { label: string }) {
   const ref = useRef(0);
   ref.current += 1;
   return (
@@ -11,10 +11,21 @@ function RenderBadge({ label }) {
   );
 }
 
-function makeCoins(count) {
+type Coin = {
+  id: number;
+  rank: number;
+  name: string;
+  symbol: string;
+  price: number;
+  change24h: number;
+  marketCap: number;
+  volume24h: number;
+};
+
+function makeCoins(count: number): Coin[] {
   const names = ["Bitcoin","Ethereum","Tether","BNB","Solana","XRP","USDC","Cardano","Dogecoin","TRON"];
   const symbols = ["BTC","ETH","USDT","BNB","SOL","XRP","USDC","ADA","DOGE","TRX"];
-  const coins = [];
+  const coins: Coin[] = [];
   for (let i = 0; i < count; i++) {
     const n = names[i % names.length];
     const s = symbols[i % symbols.length];
@@ -35,11 +46,11 @@ function makeCoins(count) {
   return coins;
 }
 
-function formatNumber(n) {
+function formatNumber(n: number) {
   return Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(n);
 }
 
-function PriceCell({ value }) {
+function PriceCell({ value }: { value: { price: number; change24h: number } }) {
   const cls = value.change24h > 0 ? "cmc-change up" : value.change24h < 0 ? "cmc-change down" : "cmc-change";
   return (
     <div className="cmc-pricebox">
@@ -50,11 +61,10 @@ function PriceCell({ value }) {
   );
 }
 
-
-function ProfilerBox({ id, children }) {
+function ProfilerBox({ id, children }: { id: string; children: React.ReactNode }) {
   const statsRef = useRef({ commits: 0, totalActual: 0, totalBase: 0 });
-  const viewRef = useRef(null);
-  const onRender = (pid, phase, actualDuration, baseDuration) => {
+  const viewRef = useRef<HTMLDivElement | null>(null);
+  const onRender = (_pid: string, _phase: string, actualDuration: number, baseDuration: number) => {
     const s = statsRef.current;
     s.commits += 1;
     s.totalActual += actualDuration;
@@ -81,8 +91,8 @@ function ProfilerBox({ id, children }) {
   );
 }
 
-const GranuleCoinRow = memo(function GranuleCoinRow({ store, index, agg }) {
-  const data = useGranular(store, { from: (s) => s.coins[index], pick: [
+const GranuleCoinRow = memo(function GranuleCoinRow({ store, index, agg }: { store: any; index: number; agg: any }) {
+  const data = useGranular(store, { from: (s: { coins: Coin[] }) => s.coins[index], pick: [
     "id","rank","name","symbol","price","change24h","marketCap","volume24h"
   ] });
   const rendersRef = useRef(0);
@@ -93,19 +103,19 @@ const GranuleCoinRow = memo(function GranuleCoinRow({ store, index, agg }) {
   }
   return (
     <tr className="cmc-row">
-      <td className="cmc-rank">{data.rank}</td>
+      <td className="cmc-rank">{(data as any).rank}</td>
       <td className="cmc-cell">
-        <strong className="cmc-name-main">{data.name}</strong> <span className="cmc-symbol">{data.symbol}</span>
+        <strong className="cmc-name-main">{(data as any).name}</strong> <span className="cmc-symbol">{(data as any).symbol}</span>
         <RenderBadge label={`G-${index}`} />
       </td>
-      <td className="cmc-cell"><PriceCell value={{ price: data.price, change24h: data.change24h }} /></td>
-      <td className="cmc-cell">${formatNumber(data.marketCap)}</td>
-      <td className="cmc-cell">${formatNumber(data.volume24h)}</td>
+      <td className="cmc-cell"><PriceCell value={{ price: (data as any).price, change24h: (data as any).change24h }} /></td>
+      <td className="cmc-cell">${formatNumber((data as any).marketCap)}</td>
+      <td className="cmc-cell">${formatNumber((data as any).volume24h)}</td>
     </tr>
   );
 });
 
-function BaselineCoinRow({ coin, index, agg }) {
+function BaselineCoinRow({ coin, index, agg }: { coin: Coin; index: number; agg: any }) {
   const rendersRef = useRef(0);
   rendersRef.current += 1;
   if (agg) {
@@ -126,12 +136,12 @@ function BaselineCoinRow({ coin, index, agg }) {
   );
 }
 
-function GranuleCoinsTable({ count = 500, updatesPerTick = 20, tickMs = 250 }) {
-  const store = useMemo(() => createStore({ coins: makeCoins(count), running: false }), [count]);
+function GranuleCoinsTable({ count = 500, updatesPerTick = 20, tickMs = 250 }: { count?: number; updatesPerTick?: number; tickMs?: number }) {
+  const store = useMemo(() => createStore<{ coins: Coin[]; running: boolean }>({ coins: makeCoins(count), running: false }), [count]);
   const running = useGranular(store, (s) => s.running);
   const agg = useRef({ rows: new Uint32Array(count), total: 0 });
   const [stats, setStats] = useState({ totalRenders: 0 });
-  const [bench, setBench] = useState(null);
+  const [bench, setBench] = useState<{ steps: number; ms: number } | null>(null);
 
   useEffect(() => {
     if (!running) return;
@@ -211,11 +221,11 @@ function GranuleCoinsTable({ count = 500, updatesPerTick = 20, tickMs = 250 }) {
   );
 }
 
-function BaselineCoinsTable({ count = 500, updatesPerTick = 20, tickMs = 250 }) {
-  const [state, setState] = useState(() => ({ coins: makeCoins(count), running: false }));
+function BaselineCoinsTable({ count = 500, updatesPerTick = 20, tickMs = 250 }: { count?: number; updatesPerTick?: number; tickMs?: number }) {
+  const [state, setState] = useState<{ coins: Coin[]; running: boolean }>(() => ({ coins: makeCoins(count), running: false }));
   const agg = useRef({ rows: new Uint32Array(count), total: 0 });
   const [stats, setStats] = useState({ totalRenders: 0 });
-  const [bench, setBench] = useState(null);
+  const [bench, setBench] = useState<{ steps: number; ms: number } | null>(null);
 
   useEffect(() => {
     if (!state.running) return;

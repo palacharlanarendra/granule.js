@@ -1,7 +1,7 @@
 import { useMemo, useState, useRef } from "react";
 import { createStore, useGranular } from "granule-js";
 
-function RenderBadge({ label }) {
+function RenderBadge({ label }: { label: string }) {
   const ref = useRef(0);
   ref.current += 1;
   return (
@@ -11,8 +11,7 @@ function RenderBadge({ label }) {
   );
 }
 
-// Baseline bench uses a simple Context-like state via useState.
-function BaselineBenchSection({ count = 300 }) {
+function BaselineBenchSection({ count = 300 }: { count?: number }) {
   const [state, setState] = useState(() => ({
     items: Array.from({ length: count }, () => ({ value: 0 })),
     globalCounter: 0,
@@ -36,8 +35,7 @@ function BaselineBenchSection({ count = 300 }) {
     for (let i = 0; i < times; i++) {
       await new Promise((r) => setTimeout(r, 0));
       setState((prev) => {
-        const next = { ...prev };
-        // naive copy to simulate common immutable update
+        const next = { ...prev } as any;
         const items = next.items.slice();
         items[index] = { value: items[index].value + 1 };
         next.items = items;
@@ -48,8 +46,8 @@ function BaselineBenchSection({ count = 300 }) {
     return { ms: Math.round(t1 - t0), times };
   };
 
-  const [resultGlobal, setResultGlobal] = useState(null);
-  const [resultItem, setResultItem] = useState(null);
+  const [resultGlobal, setResultGlobal] = useState<{ times: number; ms: number } | null>(null);
+  const [resultItem, setResultItem] = useState<{ times: number; ms: number } | null>(null);
 
   return (
     <div>
@@ -86,7 +84,7 @@ function BaselineBenchSection({ count = 300 }) {
   );
 }
 
-function GranuleBenchSection({ count = 300 }) {
+function GranuleBenchSection({ count = 300 }: { count?: number }) {
   const store = useMemo(() => createStore({
     items: Array.from({ length: count }, () => ({ value: 0 })),
     globalCounter: 0,
@@ -114,8 +112,8 @@ function GranuleBenchSection({ count = 300 }) {
     return { ms: Math.round(t1 - t0), times };
   };
 
-  const [resultGlobal, setResultGlobal] = useState(null);
-  const [resultItem, setResultItem] = useState(null);
+  const [resultGlobal, setResultGlobal] = useState<{ times: number; ms: number } | null>(null);
+  const [resultItem, setResultItem] = useState<{ times: number; ms: number } | null>(null);
 
   return (
     <div>
@@ -149,7 +147,7 @@ function GranuleBenchSection({ count = 300 }) {
   );
 }
 
-function GranuleItem({ store, index }) {
+function GranuleItem({ store, index }: { store: any; index: number }) {
   const value = useGranular(store, (s) => s.items[index].value);
   return (
     <div>

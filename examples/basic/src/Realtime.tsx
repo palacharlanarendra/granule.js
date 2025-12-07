@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, memo } from "react"
 import { createStore, useGranular } from "granule-js"
 
-function RenderBadge({ label }) {
+function RenderBadge({ label }: { label: string }) {
   const ref = useRef(0)
   ref.current += 1
   return (
@@ -11,11 +11,11 @@ function RenderBadge({ label }) {
   )
 }
 
-function formatNumber(n) {
+function formatNumber(n: number) {
   return Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(n)
 }
 
-function PriceCell({ value }) {
+function PriceCell({ value }: { value: { price: number; change24h: number } }) {
   const cls = value.change24h > 0 ? "cmc-change up" : value.change24h < 0 ? "cmc-change down" : "cmc-change"
   return (
     <div className="cmc-pricebox">
@@ -53,8 +53,8 @@ function makeInitialCoins() {
   }))
 }
 
-const Row = memo(function Row({ store, index, agg }) {
-  const data = useGranular(store, { from: s => s.coins[index], pick: ["id","rank","name","symbol","price","change24h"] })
+const Row = memo(function Row({ store, index, agg }: { store: any; index: number; agg: any }) {
+  const data = useGranular(store, { from: (s: any) => s.coins[index], pick: ["id","rank","name","symbol","price","change24h"] }) as any
   const rendersRef = useRef(0)
   rendersRef.current += 1
   if (agg) {
@@ -77,8 +77,8 @@ const Row = memo(function Row({ store, index, agg }) {
 
 export default function Realtime() {
   const count = pairs.length
-  const store = useMemo(() => createStore({ coins: makeInitialCoins(), running: false }), [])
-  const running = useGranular(store, s => s.running)
+  const store = useMemo(() => createStore<{ coins: any[]; running: boolean }>({ coins: makeInitialCoins(), running: false }), [])
+  const running = useGranular(store, (s) => s.running)
   const agg = useRef({ rows: new Uint32Array(count), total: 0 })
   const [stats, setStats] = useState({ totalRenders: 0 })
 
@@ -92,7 +92,7 @@ export default function Realtime() {
         const data = await res.json()
         store.set(s => {
           for (const item of data) {
-            const idx = s.coins.findIndex(c => c.symkey === item.symbol)
+            const idx = s.coins.findIndex((c: any) => c.symkey === item.symbol)
             if (idx >= 0) {
               const prev = s.coins[idx].price
               const next = parseFloat(item.price)
@@ -122,7 +122,7 @@ export default function Realtime() {
             const data = await res.json()
             store.set(s => {
               for (const item of data) {
-                const idx = s.coins.findIndex(c => c.symkey === item.symbol)
+                const idx = s.coins.findIndex((c: any) => c.symkey === item.symbol)
                 if (idx >= 0) {
                   const prev = s.coins[idx].price
                   const next = parseFloat(item.price)
