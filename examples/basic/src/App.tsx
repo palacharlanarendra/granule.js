@@ -92,27 +92,31 @@ function getRouteFromHash() {
 
 function App() {
   const [route, setRoute] = useState(getRouteFromHash());
+  const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
     const onHashChange = () => setRoute(getRouteFromHash());
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
+  useEffect(() => { setMenuOpen(false) }, [route])
 
   return (
     <>
       <header className="app-navbar">
         <div className="app-bar">
           <h1 className="app-brand">Granule.js</h1>
-          <nav className="app-nav">
-            <a href="#/" className={route === '/' ? 'active' : undefined}>Home</a>
-            <a href="#/dashboard" className={route === 'dashboard' ? 'active' : undefined}>Granule vs Baseline</a>
-            <a href="#/coins-granule" className={route === 'coins-granule' ? 'active' : undefined}>Coins (Granule)</a>
-            <a href="#/coins-baseline" className={route === 'coins-baseline' ? 'active' : undefined}>Coins (Baseline)</a>
-            <a href="#/coins-cells" className={route === 'coins-cells' ? 'active' : undefined}>Coins (Cells)</a>
-            <a href="#/realtime" className={route === 'realtime' ? 'active' : undefined}>Real-time</a>
-            <a href="#/bench" className={route === 'bench' ? 'active' : undefined}>Benchmark</a>
+          <button className="nav-toggle" onClick={() => setMenuOpen(v => !v)} aria-label="Menu">☰</button>
+          <nav className="app-nav desktop">
+            <NavLinks route={route} />
           </nav>
         </div>
+        {menuOpen && (
+          <div className="mobile-nav">
+            <nav className="app-nav">
+              <NavLinks route={route} />
+            </nav>
+          </div>
+        )}
       </header>
       <main className="app-main">
         <div style={{ padding: 16 }}>
@@ -141,7 +145,30 @@ function App() {
 
 export default App
 
+function NavLinks({ route }: { route: string }) {
+  return (
+    <>
+      <a href="#/" className={route === '/' ? 'active' : undefined}>Home</a>
+      <a href="#/dashboard" className={route === 'dashboard' ? 'active' : undefined}>Granule vs Baseline</a>
+      <a href="#/coins-granule" className={route === 'coins-granule' ? 'active' : undefined}>Coins (Granule)</a>
+      <a href="#/coins-baseline" className={route === 'coins-baseline' ? 'active' : undefined}>Coins (Baseline)</a>
+      <a href="#/coins-cells" className={route === 'coins-cells' ? 'active' : undefined}>Coins (Cells)</a>
+      <a href="#/realtime" className={route === 'realtime' ? 'active' : undefined}>Real-time</a>
+      <a href="#/bench" className={route === 'bench' ? 'active' : undefined}>Benchmark</a>
+    </>
+  )
+}
+
 function Home() {
+  const [copiedCart, setCopiedCart] = useState(false)
+  const [copiedProfile, setCopiedProfile] = useState(false)
+  const snippetCart = `npm i granule-js\n\nimport { createStore, useGranular } from 'granule-js'\n\nconst store = createStore({ cart: { total: 0, items: [] } })\n\nfunction Total() {\n  const total = useGranular(store, s => s.cart.total)\n  return (<div>\${'{'}total{'}'}<\/div>)\n}\n\nfunction Item({ index }: { index: number }) {\n  const item = useGranular(store, { from: s => s.cart.items[index], pick: ['name','qty'] }) as any\n  return (<div>\${'{'}item.name{'}'} × \${'{'}item.qty{'}'}<\/div>)\n}\n\nstore.set(draft => {\n  draft.cart.total += 10\n  draft.cart.items.push({ name: 'Book', qty: 1 })\n})`
+  const snippetProfile = `npm i granule-js\n\nimport { createStore, useGranular } from 'granule-js'\n\nconst store = createStore({ user: { name: 'John', age: 30 } })\n\nfunction Profile() {\n  const name = useGranular(store, s => s.user.name)\n  const age = useGranular(store, s => s.user.age)\n  return (\n    <div>\n      <div>\${'{'}name{'}'}<\/div>\n      <div>\${'{'}age{'}'}<\/div>\n    </div>\n  )\n}\n\nstore.set(draft => { draft.user.age += 1 })`
+  const handleCopy = async (text: string, setFlag: (v: boolean) => void) => {
+    try { await navigator.clipboard.writeText(text) } catch (_) {}
+    setFlag(true)
+    setTimeout(() => setFlag(false), 1200)
+  }
   return (
     <div>
       <div className="home-hero">
@@ -171,26 +198,8 @@ function Home() {
             <li>Update via immutable drafts; only affected subscribers re-render.</li>
           </ul>
           <div className="code-block">
-<pre><code>{`npm i granule-js
-
-import { createStore, useGranular } from 'granule-js'
-
-const store = createStore({ cart: { total: 0, items: [] } })
-
-function Total() {
-  const total = useGranular(store, s => s.cart.total)
-  return (<div>${'{'}total{'}'}</div>)
-}
-
-function Item({ index }: { index: number }) {
-  const item = useGranular(store, { from: s => s.cart.items[index], pick: ['name','qty'] }) as any
-  return (<div>${'{'}item.name{'}'} × ${'{'}item.qty{'}'}</div>)
-}
-
-store.set(draft => {
-  draft.cart.total += 10
-  draft.cart.items.push({ name: 'Book', qty: 1 })
-})`}</code></pre>
+            <div className="code-actions"><button className="btn small" onClick={() => handleCopy(snippetCart, setCopiedCart)}>{copiedCart ? 'Copied' : 'Copy'}</button></div>
+            <pre><code>{snippetCart}</code></pre>
           </div>
           <div className="home-actions">
             <a className="btn primary" href="#/dashboard">Compare granule vs baseline</a>
@@ -202,24 +211,8 @@ store.set(draft => {
       <div className="section-card" style={{ marginTop: 16 }}>
         <h3 className="home-section-title">Get started</h3>
         <div className="code-block">
-<pre><code>{`npm i granule-js
-
-import { createStore, useGranular } from 'granule-js'
-
-const store = createStore({ user: { name: 'John', age: 30 } })
-
-function Profile() {
-  const name = useGranular(store, s => s.user.name)
-  const age = useGranular(store, s => s.user.age)
-  return (
-    <div>
-      <div>${'{'}name{'}'}</div>
-      <div>${'{'}age{'}'}</div>
-    </div>
-  )
-}
-
-store.set(draft => { draft.user.age += 1 })`}</code></pre>
+          <div className="code-actions"><button className="btn small" onClick={() => handleCopy(snippetProfile, setCopiedProfile)}>{copiedProfile ? 'Copied' : 'Copy'}</button></div>
+          <pre><code>{snippetProfile}</code></pre>
         </div>
         <div className="home-actions">
           <a className="btn primary" href="#/coins-granule">Try the Coins demo</a>

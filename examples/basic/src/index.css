@@ -78,6 +78,8 @@ button:focus-visible {
 .app-nav a { color: #0f1113; }
 .app-nav a:hover { color: #535bf2; }
 .app-nav a.active { color: #535bf2; font-weight: 600; border-bottom: 2px solid #535bf2; }
+.nav-toggle { display: none; align-items: center; justify-content: center; border: 1px solid #eaeef2; background: #fff; border-radius: 8px; height: 32px; width: 36px; font-size: 18px; }
+.mobile-nav { display: none; }
 .nav-item-with-tip { position: relative; }
 .nav-tip { display: none; position: absolute; top: 100%; left: 0; transform: translateY(6px); background: #ffffff; border: 1px solid #eaeef2; box-shadow: 0 8px 24px rgba(16,24,40,0.12); padding: 10px 12px; border-radius: 8px; max-width: 360px; font-size: 12px; line-height: 1.4; color: #0f1113; z-index: 200; }
 .nav-item-with-tip:hover .nav-tip { display: block; }
@@ -103,3 +105,32 @@ button:focus-visible {
 .home-list { margin: 0; padding-left: 18px; text-align: left; color: #0f1113; }
 .home-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; align-items: start; }
 .home-paragraph { margin: 0 0 10px; color: #0f1113; text-align: left; }
+.code-actions { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+.btn.small { padding: 6px 10px; font-size: 12px; }
+
+@media (max-width: 900px) {
+  .grid-home { grid-template-columns: repeat(2, 1fr); }
+  .home-columns { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .app-navbar { height: 52px; padding: 0 12px; }
+  .app-main { padding-top: 64px; }
+  .app-brand { font-size: 1rem; }
+  .nav-toggle { display: inline-flex; }
+  .app-nav.desktop { display: none; }
+  .mobile-nav { display: block; position: fixed; top: 52px; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #eaeef2; padding: 12px; }
+  .mobile-nav .app-nav { flex-direction: column; gap: 12px; }
+  .mobile-nav .app-nav a { white-space: normal; padding: 8px 4px; border-bottom: 1px solid #eaeef2; }
+  .home-actions { flex-wrap: wrap; }
+  .home-actions .btn { flex: 1 1 auto; }
+  .section-card { padding: 12px; }
+  .grid-home { grid-template-columns: 1fr; }
+  .split-3 { grid-template-columns: 1fr; row-gap: 24px; }
+  .split-divider { display: none; }
+  .code-block { font-size: 12px; }
+  .cmc-table-wrap { overflow: auto; }
+  .cmc-table { min-width: 600px; }
+  .cmc-table tbody td { padding: 10px 12px; }
+  .cmc-rank { width: 48px; }
+}
