@@ -1,7 +1,7 @@
 {
   "name": "granule-js",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Granular subscription state management for React via path-based dependency tracking.",
   "license": "MIT",
   "type": "module",
