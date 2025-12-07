@@ -77,6 +77,7 @@ button:focus-visible {
 .app-nav { display: flex; gap: 12px; }
 .app-nav a { color: #0f1113; }
 .app-nav a:hover { color: #535bf2; }
+.app-nav a.active { color: #535bf2; font-weight: 600; border-bottom: 2px solid #535bf2; }
 .nav-item-with-tip { position: relative; }
 .nav-tip { display: none; position: absolute; top: 100%; left: 0; transform: translateY(6px); background: #ffffff; border: 1px solid #eaeef2; box-shadow: 0 8px 24px rgba(16,24,40,0.12); padding: 10px 12px; border-radius: 8px; max-width: 360px; font-size: 12px; line-height: 1.4; color: #0f1113; z-index: 200; }
 .nav-item-with-tip:hover .nav-tip { display: block; }
@@ -85,3 +86,20 @@ button:focus-visible {
 .section-card { border: 1px solid #eaeef2; border-radius: 12px; padding: 16px; background: #fff; box-shadow: 0 2px 8px rgba(16,24,40,0.06); }
 .split-3 { display: grid; grid-template-columns: 1fr 1px 1fr; column-gap: 48px; align-items: start; }
 .split-divider { width: 1px; background: #eaeef2; }
+
+.home-hero { text-align: left; padding: 8px 0; }
+.home-subtitle { margin: 6px 0 12px; color: #58667e; }
+.home-actions { display: flex; gap: 8px; margin-top: 8px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 12px; border-radius: 8px; border: 1px solid #eaeef2; background: #fff; color: #0f1113; text-decoration: none; font-size: 14px; }
+.btn:hover { border-color: #646cff; color: #535bf2; }
+.btn.primary { background: #646cff; color: #fff; border-color: #646cff; }
+.btn.primary:hover { background: #535bf2; border-color: #535bf2; color: #fff; }
+.home-section-title { margin: 0 0 12px; text-align: left; color: #0f1113; }
+.code-block { text-align: left; border: 1px solid #eaeef2; border-radius: 8px; background: #f8fafd; padding: 12px; overflow: auto; }
+.grid-home { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.home-card { display: flex; flex-direction: column; gap: 6px; border: 1px solid #eaeef2; border-radius: 12px; padding: 16px; background: #fff; box-shadow: 0 2px 8px rgba(16,24,40,0.06); color: #0f1113; text-decoration: none; }
+.home-card h3 { margin: 0; }
+.home-card p { margin: 0; color: #58667e; }
+.home-list { margin: 0; padding-left: 18px; text-align: left; color: #0f1113; }
+.home-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; align-items: start; }
+.home-paragraph { margin: 0 0 10px; color: #0f1113; text-align: left; }
