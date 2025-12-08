@@ -1,4 +1,4 @@
-<img width="350" height="150" alt="Gemini_Generated_Image_ps56z7ps56z7ps56" src="https://github.com/user-attachments/assets/2444db6b-8f95-4084-8aa4-74b038d2091c" />
+<img width="350" height="150" alt="Screenshot 2025-12-09 at 12 43 38 AM" src="https://github.com/user-attachments/assets/71791844-572c-4425-8200-d0074571f433" />
 
 Granular state for React. Subscribe components to the exact paths they read, and re-render only when those paths change.
 
