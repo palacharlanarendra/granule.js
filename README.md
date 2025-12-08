@@ -1,4 +1,4 @@
-# Granule.js
+<img width="300" height="150" alt="Gemini_Generated_Image_ps56z7ps56z7ps56-Photoroom" src="https://github.com/user-attachments/assets/35cb6dc5-125f-4b11-9ca6-881d459a986d" />
 
 Granular state for React. Subscribe components to the exact paths they read, and re-render only when those paths change.
 
