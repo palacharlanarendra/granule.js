@@ -3,10 +3,10 @@ import './App.css'
 import { store } from './store'
 import { useGranular } from 'granule-js'
 import { BaselineProvider, useBaseline } from './baselineStore'
-import Bench from './Bench'
 import { CoinsGranule, CoinsBaseline } from './Coins'
 import Realtime from './Realtime'
 import CoinsCells from './CoinsCells'
+import Benchmark1 from './benchmark/Benchmark1'
 
 function RenderCountBadge({ label }: { label: string }) {
   const rendersRef = useRef(0);
@@ -81,12 +81,13 @@ function Controls() {
 function getRouteFromHash() {
   const hash = window.location.hash.replace(/^#/, '');
   if (hash === '' || hash === '/') return '/';
-  if (hash.startsWith('/bench')) return 'bench';
+  // if (hash.startsWith('/bench')) return 'bench';
   if (hash.startsWith('/coins-granule')) return 'coins-granule';
   if (hash.startsWith('/coins-baseline')) return 'coins-baseline';
   if (hash.startsWith('/coins-cells')) return 'coins-cells';
   if (hash.startsWith('/realtime')) return 'realtime';
   if (hash.startsWith('/dashboard')) return 'dashboard';
+  if (hash.startsWith('/benchmark-1')) return 'benchmark-1';
   return '/';
 }
 
@@ -120,9 +121,7 @@ function App() {
       </header>
       <main className="app-main">
         <div style={{ padding: 16 }}>
-          {route === 'bench' ? (
-            <Bench />
-          ) : route === 'coins-granule' ? (
+          {route === 'coins-granule' ? (
             <CoinsGranule />
           ) : route === 'coins-baseline' ? (
             <CoinsBaseline />
@@ -134,6 +133,8 @@ function App() {
             <Home />
           ) : route === 'dashboard' ? (
             <Dashboard />
+          ) : route === 'benchmark-1' ? (
+            <Benchmark1 />
           ) : (
             <Home />
           )}
@@ -154,7 +155,8 @@ function NavLinks({ route }: { route: string }) {
       <a href="#/coins-baseline" className={route === 'coins-baseline' ? 'active' : undefined}>Coins (Baseline)</a>
       <a href="#/coins-cells" className={route === 'coins-cells' ? 'active' : undefined}>Coins (Cells)</a>
       <a href="#/realtime" className={route === 'realtime' ? 'active' : undefined}>Real-time</a>
-      <a href="#/bench" className={route === 'bench' ? 'active' : undefined}>Benchmark</a>
+      
+      <a href="#/benchmark-1" className={route === 'benchmark-1' ? 'active' : undefined}>Benchmark 1</a>
     </>
   )
 }
