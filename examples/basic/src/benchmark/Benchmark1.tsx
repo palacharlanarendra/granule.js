@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, Profiler } from 'react'
+import { useEffect, useMemo, useRef, useState, Profiler, memo, useCallback } from 'react'
 import { createStore, useGranular } from 'granule-js'
 
 type Row = { c1: number; c2: number; c3: number; c4: number; c5: number }
@@ -30,7 +30,8 @@ function GranuleRow({ store, index, onRender }: { store: RowsStore; index: numbe
   )
 }
 
-function BaselineRow({ row, onRender }: { row: Row; onRender: () => void }) {
+type BaselineRowProps = { row: Row; onRender: () => void }
+const BaselineRow = memo(function BaselineRow({ row, onRender }: BaselineRowProps) {
   const renders = useRef(0); renders.current += 1
   onRender()
   return (
@@ -43,7 +44,7 @@ function BaselineRow({ row, onRender }: { row: Row; onRender: () => void }) {
       <span style={{ fontSize: 11, color: '#58667e' }}>r:{renders.current}</span>
     </div>
   )
-}
+}, (prev, next) => prev.row === next.row)
 
 export default function Benchmark1() {
   const [rowsCount, setRowsCount] = useState(2000)
@@ -66,6 +67,7 @@ export default function Benchmark1() {
 
   const granuleStore = useMemo(() => createStore<{ rows: Row[] }>({ rows: makeRows(rowsCount) }), [rowsCount])
   const [baseline, setBaseline] = useState<{ rows: Row[] }>({ rows: makeRows(rowsCount) })
+  const onRowRender = useCallback(() => { rendersTotalRef.current += 1 }, [])
 
   const onRender = (
     _id: string,
@@ -208,7 +210,7 @@ export default function Benchmark1() {
           <Profiler id="bench1-granule" onRender={onRender}>
             <div>
               {Array.from({ length: rowsCount }).map((_, i) => (
-                <GranuleRow key={i} store={granuleStore} index={i} onRender={() => { rendersTotalRef.current += 1 }} />
+                <GranuleRow key={i} store={granuleStore} index={i} onRender={onRowRender} />
               ))}
             </div>
           </Profiler>
@@ -216,7 +218,7 @@ export default function Benchmark1() {
           <Profiler id="bench1-baseline" onRender={onRender}>
             <div>
               {baseline.rows.map((row, i) => (
-                <BaselineRow key={i} row={row} onRender={() => { rendersTotalRef.current += 1 }} />
+                <BaselineRow key={i} row={row} onRender={onRowRender} />
               ))}
             </div>
           </Profiler>
