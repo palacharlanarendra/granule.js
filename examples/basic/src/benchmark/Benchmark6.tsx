@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, Profiler, memo, useCallback } from 'react'
-import { createStore, useGranular } from 'granule-js'
+import { createStore } from 'granule-js'
 
 type Row = { c1: number; c2: number; c3: number; c4: number; c5: number }
 type RowsStore = ReturnType<typeof createStore<{ rows: Row[] }>>
@@ -10,21 +10,52 @@ function makeRows(n: number): Row[] {
   return arr
 }
 
+// Cell component that bypasses React re-renders using imperative DOM updates
+const DirectCell = memo(({ store, index, col }: { store: RowsStore; index: number; col: keyof Row }) => {
+  const ref = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    const id = Symbol()
+    const path = `rows.${index}.${col}`
+
+    // Initial sync
+    const state = store.get()
+    const val = state.rows[index]?.[col]
+    if (ref.current) ref.current.textContent = String(val ?? 0)
+
+    // Subscribe to store updates directly
+    const unsub = store.subscribeComponent(id, () => {
+      const s = store.get()
+      const v = s.rows[index]?.[col]
+      if (ref.current) {
+        ref.current.textContent = String(v ?? 0)
+      }
+    })
+
+    // Register dependency path
+    store.updateComponentPaths(id, new Set([path]))
+
+    return () => {
+      store.clearComponentPaths(id)
+      unsub()
+    }
+  }, [store, index, col])
+
+  // Initial render with static value (subsequent updates happen via ref)
+  const initialValue = store.get().rows[index]?.[col] ?? 0
+  return <span ref={ref}>{initialValue}</span>
+})
+
 function GranuleRow({ store, index, onRender }: { store: RowsStore; index: number; onRender: () => void }) {
-  const c1 = useGranular(store, s => s.rows[index]?.c1 ?? 0) as number
-  const c2 = useGranular(store, s => s.rows[index]?.c2 ?? 0) as number
-  const c3 = useGranular(store, s => s.rows[index]?.c3 ?? 0) as number
-  const c4 = useGranular(store, s => s.rows[index]?.c4 ?? 0) as number
-  const c5 = useGranular(store, s => s.rows[index]?.c5 ?? 0) as number
   const renders = useRef(0); renders.current += 1
   onRender()
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: 8, padding: '6px 8px', borderBottom: '1px solid #eaeef2' }}>
-      <span>{c1}</span>
-      <span>{c2}</span>
-      <span>{c3}</span>
-      <span>{c4}</span>
-      <span>{c5}</span>
+      <DirectCell store={store} index={index} col="c1" />
+      <DirectCell store={store} index={index} col="c2" />
+      <DirectCell store={store} index={index} col="c3" />
+      <DirectCell store={store} index={index} col="c4" />
+      <DirectCell store={store} index={index} col="c5" />
       <span style={{ fontSize: 11, color: '#58667e' }}>r:{renders.current}</span>
     </div>
   )
@@ -46,7 +77,7 @@ const BaselineRow = memo(function BaselineRow({ row, onRender }: BaselineRowProp
   )
 }, (prev, next) => prev.row === next.row)
 
-export default function Benchmark1() {
+export default function Benchmark6() {
   const [rowsCount, setRowsCount] = useState(2000)
   const [pct, setPct] = useState(10)
   const [mode, setMode] = useState<'granule' | 'baseline'>('granule')
@@ -220,7 +251,7 @@ export default function Benchmark1() {
 
   return (
     <div style={{ marginTop: 24 }}>
-      <h2 style={{ marginTop: 0 }}>Benchmark 1: Massive Table / Partial Updates</h2>
+      <h2 style={{ marginTop: 0 }}>Benchmark 6: Cell-Level Updates</h2>
       <div className="section-card">
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           <select value={mode} onChange={e => setMode(e.target.value as any)}>
@@ -252,7 +283,7 @@ export default function Benchmark1() {
       </div>
       <div style={{ border: '1px solid #eaeef2', borderRadius: 8, overflow: 'auto', marginTop: 12, maxHeight: 480 }}>
         {mode === 'granule' ? (
-          <Profiler id="bench1-granule" onRender={onRender}>
+          <Profiler id="bench6-granule" onRender={onRender}>
             <div>
               {Array.from({ length: rowsCount }).map((_, i) => (
                 <GranuleRow key={i} store={granuleStore} index={i} onRender={onRowRender} />
@@ -260,7 +291,7 @@ export default function Benchmark1() {
             </div>
           </Profiler>
         ) : (
-          <Profiler id="bench1-baseline" onRender={onRender}>
+          <Profiler id="bench6-baseline" onRender={onRender}>
             <div>
               {baseline.rows.map((row, i) => (
                 <BaselineRow key={i} row={row} onRender={onRowRender} />

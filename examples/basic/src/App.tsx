@@ -7,6 +7,11 @@ import { CoinsGranule, CoinsBaseline } from './Coins'
 import Realtime from './Realtime'
 import CoinsCells from './CoinsCells'
 import Benchmark1 from './benchmark/Benchmark1'
+import Benchmark2 from './benchmark/Benchmark2'
+import Benchmark3 from './benchmark/Benchmark3'
+import Benchmark4 from './benchmark/Benchmark4'
+import Benchmark5 from './benchmark/Benchmark5'
+import Benchmark6 from './benchmark/Benchmark6'
 
 function RenderCountBadge({ label }: { label: string }) {
   const rendersRef = useRef(0);
@@ -88,6 +93,11 @@ function getRouteFromHash() {
   if (hash.startsWith('/realtime')) return 'realtime';
   if (hash.startsWith('/dashboard')) return 'dashboard';
   if (hash.startsWith('/benchmark-1')) return 'benchmark-1';
+  if (hash.startsWith('/benchmark-2')) return 'benchmark-2';
+  if (hash.startsWith('/benchmark-3')) return 'benchmark-3';
+  if (hash.startsWith('/benchmark-4')) return 'benchmark-4';
+  if (hash.startsWith('/benchmark-5')) return 'benchmark-5';
+  if (hash.startsWith('/benchmark-6')) return 'benchmark-6';
   return '/';
 }
 
@@ -135,6 +145,16 @@ function App() {
             <Dashboard />
           ) : route === 'benchmark-1' ? (
             <Benchmark1 />
+          ) : route === 'benchmark-2' ? (
+            <Benchmark2 />
+          ) : route === 'benchmark-3' ? (
+            <Benchmark3 />
+          ) : route === 'benchmark-4' ? (
+            <Benchmark4 />
+          ) : route === 'benchmark-5' ? (
+            <Benchmark5 />
+          ) : route === 'benchmark-6' ? (
+            <Benchmark6 />
           ) : (
             <Home />
           )}
@@ -157,6 +177,11 @@ function NavLinks({ route }: { route: string }) {
       <a href="#/realtime" className={route === 'realtime' ? 'active' : undefined}>Real-time</a>
       
       <a href="#/benchmark-1" className={route === 'benchmark-1' ? 'active' : undefined}>Benchmark 1</a>
+      <a href="#/benchmark-2" className={route === 'benchmark-2' ? 'active' : undefined}>Benchmark 2</a>
+      <a href="#/benchmark-3" className={route === 'benchmark-3' ? 'active' : undefined}>Benchmark 3</a>
+      <a href="#/benchmark-4" className={route === 'benchmark-4' ? 'active' : undefined}>Benchmark 4</a>
+      <a href="#/benchmark-5" className={route === 'benchmark-5' ? 'active' : undefined}>Benchmark 5</a>
+      <a href="#/benchmark-6" className={route === 'benchmark-6' ? 'active' : undefined}>Benchmark 6</a>
     </>
   )
 }
