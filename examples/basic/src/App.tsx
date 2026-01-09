@@ -115,7 +115,7 @@ function App() {
     <>
       <header className="app-navbar">
         <div className="app-bar">
-          <h1 className="app-brand">Granule.js</h1>
+          <h1 className="app-brand">Granule.js (Experimental)</h1>
           <button className="nav-toggle" onClick={() => setMenuOpen(v => !v)} aria-label="Menu">☰</button>
           <nav className="app-nav desktop">
             <NavLinks route={route} />
@@ -200,7 +200,7 @@ function Home() {
     <div>
       <div className="home-hero">
         <h2 className="app-title">Granule.js</h2>
-        <p className="home-subtitle">Fine-grained React state for React. Subscribe to exactly what you read and re-render only where it matters.</p>
+        <p className="home-subtitle">Experimental library to evaluate how granular subscriptions perform in React.</p>
         <div className="home-actions">
           <a className="btn primary" href="https://www.npmjs.com/package/granule-js" target="_blank" rel="noreferrer">Install granule-js</a>
           <a className="btn" href="#/dashboard">See Granule vs Baseline</a>
@@ -211,7 +211,6 @@ function Home() {
         <div className="section-card">
           <h3 className="home-section-title">About Granule.js</h3>
           <p className="home-paragraph">Granule.js is a tiny state library that gives React components granular subscriptions to your store. Instead of re-rendering broad trees on any change, components subscribe to precise paths or picked fields, so only the pieces that actually change re-render.</p>
-          <p className="home-paragraph">This makes large tables, dashboards, and real-time views feel snappy even under heavy update load. You keep React, JSX, and your mental model — you just stop wasting renders.</p>
           <div className="home-actions">
             <a className="btn" href="#/realtime">See real-time demo</a>
             <a className="btn" href="#/coins-granule">Open coins (granule)</a>

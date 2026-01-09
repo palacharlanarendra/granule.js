@@ -47,7 +47,7 @@ const BaselineRow = memo(function BaselineRow({ row, onRender }: BaselineRowProp
 }, (prev, next) => prev.row === next.row)
 
 export default function Benchmark1() {
-  const [rowsCount, setRowsCount] = useState(2000)
+  const [rowsCount, setRowsCount] = useState(1000)
   const [pct, setPct] = useState(10)
   const [mode, setMode] = useState<'granule' | 'baseline'>('granule')
   const [running, setRunning] = useState(false)
@@ -74,6 +74,11 @@ export default function Benchmark1() {
 
   const granuleStore = useMemo(() => createStore<{ rows: Row[] }>({ rows: makeRows(rowsCount) }), [rowsCount])
   const [baseline, setBaseline] = useState<{ rows: Row[] }>({ rows: makeRows(rowsCount) })
+  
+  useEffect(() => {
+    setBaseline({ rows: makeRows(rowsCount) })
+  }, [rowsCount])
+
   const onRowRender = useCallback(() => { rendersTotalRef.current += 1 }, [])
 
   const onRender = (
