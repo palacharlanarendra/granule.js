@@ -3,7 +3,7 @@
 I’ve decided to discontinue active development and maintenance of this repository.
 After exploring the design space and real-world trade-offs, I don’t see a clear long-term scope or advantage worth pursuing further.
 The repository will remain available for reference, but no new features, fixes, or support should be expected going forward.
-Feel free to fork the repository if you’d like to experiment or continue the work independently.
+Feel free to fork the repository if you’d like to experiment or continue the work independently. You can see how to use this library in Examples folder (refer for implementation). Thanks! 
 
 <img width="350" height="150" alt="Screenshot 2025-12-09 at 12 43 38 AM" src="https://github.com/user-attachments/assets/71791844-572c-4425-8200-d0074571f433" />
 
