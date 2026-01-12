@@ -1,6 +1,6 @@
 <img width="350" height="150" alt="Screenshot 2025-12-09 at 12 43 38 AM" src="https://github.com/user-attachments/assets/71791844-572c-4425-8200-d0074571f433" />
 
-Granular state for React. Subscribe components to the exact paths they read, and re-render only when those paths change.
+Granule.js is an experimental, fine-grained state engine for React, designed to explore how far performance can be pushed when updates are tightly scoped.
 
 ## Install
 
@@ -64,3 +64,5 @@ npm test
 ```
 
 MIT
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/YOUR_USERNAME/)
